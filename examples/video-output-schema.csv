@@ -1,0 +1,1 @@
+source,mode,preset,provider,timestamp_sec,source_frame,processed_frame,visible_faces,running_unique,raw_unique,final_unique,merged_id_count,max_visible,average_visible,elapsed_seconds,media_duration_seconds,detection_ms,tracking_ms,reid_ms,total_ms,analysis_fps,mean_detection_confidence

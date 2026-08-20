@@ -1,0 +1,86 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE / editor
+.idea/
+.vscode/
+*.code-workspace
+
+# OS metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local configuration / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+credentials*.json
+secrets*.json
+
+# Build and packaging output
+build/
+dist/
+packaging/build/
+packaging/dist/
+*.spec.local
+
+# Application output
+outputs/*
+!outputs/.gitkeep
+logs/
+*.log
+
+# Private development / diagnostics
+devtools/private_diagnostics/
+evaluation/private_data/
+private/
+DEV-PRIVATE*/
+
+# Models and large ML artifacts
+models/
+*.onnx
+*.engine
+*.plan
+*.pt
+*.pth
+*.ckpt
+
+# User/test media
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+*.wav
+
+# Binary release artifacts belong in GitHub Releases, not Git
+*.exe
+*.dll
+*.msi
+*.zip
+*.rar
+*.7z
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+~$*
