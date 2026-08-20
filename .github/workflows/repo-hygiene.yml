@@ -1,0 +1,82 @@
+name: Repository hygiene
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reject private, binary, model, and local-machine artifacts
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          import sys
+
+          files = subprocess.check_output(["git", "ls-files"], text=True).splitlines()
+          forbidden_suffixes = {
+              ".onnx", ".engine", ".plan", ".pt", ".pth", ".ckpt",
+              ".exe", ".dll", ".msi", ".zip", ".rar", ".7z",
+              ".mp4", ".avi", ".mov", ".mkv", ".webm", ".pyc",
+          }
+          forbidden_parts = {
+              "__pycache__", ".idea", "private_diagnostics", "DEV-PRIVATE",
+              "packaging/dist", "packaging/build", "models/",
+          }
+
+          bad = []
+          for name in files:
+              normalized = name.replace("\\", "/")
+              path = Path(name)
+              if path.suffix.lower() in forbidden_suffixes:
+                  bad.append(name)
+                  continue
+              if any(part in normalized for part in forbidden_parts):
+                  bad.append(name)
+
+          if bad:
+              print("Forbidden public-repository artifacts detected:")
+              for name in bad:
+                  print(f" - {name}")
+              sys.exit(1)
+          PY
+
+      - name: Reject obvious local Windows paths in text files
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          import sys
+
+          files = subprocess.check_output(["git", "ls-files"], text=True).splitlines()
+          needles = ("C:\\Users\\", "OneDrive - ")
+          findings = []
+
+          for name in files:
+              p = Path(name)
+              if p.suffix.lower() in {".png", ".jpg", ".jpeg", ".ico", ".gif"}:
+                  continue
+              try:
+                  text = p.read_text(encoding="utf-8")
+              except (UnicodeDecodeError, OSError):
+                  continue
+              for needle in needles:
+                  if needle in text:
+                      findings.append((name, needle))
+
+          if findings:
+              print("Local machine path fragments detected:")
+              for name, needle in findings:
+                  print(f" - {name}: {needle}")
+              sys.exit(1)
+          PY
