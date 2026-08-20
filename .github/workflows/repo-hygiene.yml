@@ -59,7 +59,7 @@ jobs:
           import sys
 
           files = subprocess.check_output(["git", "ls-files"], text=True).splitlines()
-          needles = ("C:\\Users\\", "OneDrive - ")
+          needles = ("C:" + "\\Users\\", "OneDrive" + " - ")
           findings = []
 
           for name in files:
